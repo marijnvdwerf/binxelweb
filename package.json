@@ -9,6 +9,7 @@
     "start": "NODE_ENV=production bun src/index.tsx"
   },
   "dependencies": {
+    "@tanstack/react-virtual": "^3.13.18",
     "react": "^19",
     "react-dom": "^19"
   },
