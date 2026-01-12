@@ -4,7 +4,9 @@ node_modules
 # output
 out
 dist
+dist-ssr
 *.tgz
+*.local
 
 # code coverage
 coverage
@@ -32,3 +34,14 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 
 # Finder (MacOS) folder config
 .DS_Store
+
+# TanStack Start
+.nitro
+.tanstack
+.output
+.vinxi
+count.txt
+todos.json
+
+# Wrangler (Cloudflare)
+.wrangler

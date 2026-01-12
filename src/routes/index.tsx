@@ -1,128 +1,135 @@
-// Main Binxelview application component
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useBinxelview } from './hooks/useBinxelview';
-import { PositionPanel } from './components/PositionPanel';
-import { PackingPanel } from './components/PackingPanel';
-import { TilingPanel } from './components/TilingPanel';
-import { PalettePanel } from './components/PalettePanel';
-import { BitStridePanel } from './components/BitStridePanel';
-import { PixelViewer } from './components/PixelViewer';
-import { PixelInfoPanel } from './components/PixelInfoPanel';
-import './styles.css';
+import { createFileRoute } from '@tanstack/react-router'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { useBinxelview } from '../hooks/useBinxelview'
+import { PositionPanel } from '../components/PositionPanel'
+import { PackingPanel } from '../components/PackingPanel'
+import { TilingPanel } from '../components/TilingPanel'
+import { PalettePanel } from '../components/PalettePanel'
+import { BitStridePanel } from '../components/BitStridePanel'
+import { PixelViewer } from '../components/PixelViewer'
+import { PixelInfoPanel } from '../components/PixelInfoPanel'
 
-export function App() {
-  const [state, actions] = useBinxelview();
-  const [pixelInfo, setPixelInfo] = useState('');
-  const containerRef = useRef<HTMLDivElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const lastFileRef = useRef<File | null>(null);
+export const Route = createFileRoute('/')({
+  component: App,
+})
+
+function App() {
+  const [state, actions] = useBinxelview()
+  const [pixelInfo, setPixelInfo] = useState('')
+  const containerRef = useRef<HTMLDivElement>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const lastFileRef = useRef<File | null>(null)
 
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Check if focused on an input
-      const isInputFocused = document.activeElement?.tagName === 'INPUT' ||
+      const isInputFocused =
+        document.activeElement?.tagName === 'INPUT' ||
         document.activeElement?.tagName === 'SELECT' ||
-        document.activeElement?.tagName === 'TEXTAREA';
+        document.activeElement?.tagName === 'TEXTAREA'
 
       if (e.ctrlKey || e.metaKey) {
         switch (e.key.toLowerCase()) {
           case 'o':
-            e.preventDefault();
-            fileInputRef.current?.click();
-            break;
+            e.preventDefault()
+            fileInputRef.current?.click()
+            break
           case 'r':
-            e.preventDefault();
+            e.preventDefault()
             if (lastFileRef.current) {
-              actions.loadFile(lastFileRef.current);
+              actions.loadFile(lastFileRef.current)
             }
-            break;
+            break
         }
       } else if (!isInputFocused) {
         // Shortcuts that only work when not in an input
         switch (e.key) {
           case 'ArrowLeft':
-            e.preventDefault();
-            actions.advancePixel(-1);
-            break;
+            e.preventDefault()
+            actions.advancePixel(-1)
+            break
           case 'ArrowRight':
-            e.preventDefault();
-            actions.advancePixel(1);
-            break;
+            e.preventDefault()
+            actions.advancePixel(1)
+            break
           case 'ArrowUp':
-            e.preventDefault();
-            actions.advanceRow(-1);
-            break;
+            e.preventDefault()
+            actions.advanceRow(-1)
+            break
           case 'ArrowDown':
-            e.preventDefault();
-            actions.advanceRow(1);
-            break;
+            e.preventDefault()
+            actions.advanceRow(1)
+            break
           case 'PageUp':
-            e.preventDefault();
-            actions.advanceNext(-1);
-            break;
+            e.preventDefault()
+            actions.advanceNext(-1)
+            break
           case 'PageDown':
-            e.preventDefault();
-            actions.advanceNext(1);
-            break;
+            e.preventDefault()
+            actions.advanceNext(1)
+            break
           case '+':
           case '=':
-            e.preventDefault();
-            actions.setZoom(Math.min(32, state.zoom + 1));
-            break;
+            e.preventDefault()
+            actions.setZoom(Math.min(32, state.zoom + 1))
+            break
           case '-':
-            e.preventDefault();
-            actions.setZoom(Math.max(1, state.zoom - 1));
-            break;
+            e.preventDefault()
+            actions.setZoom(Math.max(1, state.zoom - 1))
+            break
           case 'g':
-            e.preventDefault();
-            actions.toggleGrid();
-            break;
+            e.preventDefault()
+            actions.toggleGrid()
+            break
         }
       }
-    };
+    }
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [actions, state.zoom]);
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [actions, state.zoom])
 
   // Drag and drop
   useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
+    const container = containerRef.current
+    if (!container) return
 
     const handleDragOver = (e: DragEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-    };
+      e.preventDefault()
+      e.stopPropagation()
+    }
 
     const handleDrop = (e: DragEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-      const file = e.dataTransfer?.files[0];
+      e.preventDefault()
+      e.stopPropagation()
+      const file = e.dataTransfer?.files[0]
       if (file) {
-        lastFileRef.current = file;
-        actions.loadFile(file);
+        lastFileRef.current = file
+        actions.loadFile(file)
       }
-    };
+    }
 
-    container.addEventListener('dragover', handleDragOver);
-    container.addEventListener('drop', handleDrop);
+    container.addEventListener('dragover', handleDragOver)
+    container.addEventListener('drop', handleDrop)
 
     return () => {
-      container.removeEventListener('dragover', handleDragOver);
-      container.removeEventListener('drop', handleDrop);
-    };
-  }, [actions]);
-
-  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      lastFileRef.current = file;
-      actions.loadFile(file);
+      container.removeEventListener('dragover', handleDragOver)
+      container.removeEventListener('drop', handleDrop)
     }
-    e.target.value = '';
-  }, [actions]);
+  }, [actions])
+
+  const handleFileChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0]
+      if (file) {
+        lastFileRef.current = file
+        actions.loadFile(file)
+      }
+      e.target.value = ''
+    },
+    [actions]
+  )
 
   return (
     <div className="app" ref={containerRef}>
@@ -195,7 +202,5 @@ export function App() {
         </div>
       </div>
     </div>
-  );
+  )
 }
-
-export default App;
