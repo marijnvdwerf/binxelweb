@@ -1,5 +1,6 @@
-// Palette control panel component
+// Palette control panel component - Figma-style design
 import React, { useRef, useEffect, useState, useCallback } from 'react';
+import { RefreshCw, Download, Upload } from 'lucide-react';
 import { PaletteMode, PALETTE_MODE_NAMES, PALETTE_BITS } from '../types';
 import { generatePalettePreview, getPaletteIndexFromPosition, PaletteContext } from '../palette';
 
@@ -147,81 +148,97 @@ export function PalettePanel({
   }, [bpp, customPalette]);
 
   return (
-    <div className="panel palette-panel">
-      <div className="panel-header">Palette</div>
+    <div className="panel">
+      <div className="panel-header">
+        Palette
+        <div className="panel-header-actions">
+          <button
+            className="icon-btn"
+            onClick={onRegenerateRandom}
+            disabled={paletteMode !== PaletteMode.RANDOM}
+            title="Regenerate random palette"
+          >
+            <RefreshCw size={14} />
+          </button>
+        </div>
+      </div>
+      <div className="panel-content">
+        <div className="input-row">
+          <select
+            className="select-input"
+            value={paletteMode}
+            onChange={(e) => onPaletteModeChange(parseInt(e.target.value) as PaletteMode)}
+          >
+            {PALETTE_MODE_NAMES.map((name, i) => (
+              <option key={i} value={i}>{name}</option>
+            ))}
+          </select>
+        </div>
 
-      <div className="palette-content">
-        <canvas
-          ref={canvasRef}
-          width={PREVIEW_SIZE}
-          height={PREVIEW_SIZE}
-          className="palette-preview"
-          onMouseMove={handleCanvasMove}
-          onClick={handleCanvasClick}
-        />
-
-        <div className="palette-controls">
-          <div className="control-row">
-            <div
-              className="color-box"
-              style={{ backgroundColor: background }}
-              onClick={() => {
-                const input = document.createElement('input');
-                input.type = 'color';
-                input.value = background;
-                input.onchange = () => onBackgroundChange(input.value);
-                input.click();
-              }}
-              title="Click to change background color"
+        <div className="palette-layout">
+          <div className="palette-preview-container">
+            <canvas
+              ref={canvasRef}
+              width={PREVIEW_SIZE}
+              height={PREVIEW_SIZE}
+              className="palette-preview"
+              onMouseMove={handleCanvasMove}
+              onClick={handleCanvasClick}
+              title={bpp <= PALETTE_BITS ? "Click to edit color" : ""}
             />
-            <span>Background</span>
           </div>
 
-          <div className="control-row">
-            <button
-              className="btn btn-sm"
-              onClick={onRegenerateRandom}
-              disabled={paletteMode !== PaletteMode.RANDOM}
-            >
-              Auto
-            </button>
-            <select
-              className="palette-mode-select"
-              value={paletteMode}
-              onChange={(e) => onPaletteModeChange(parseInt(e.target.value) as PaletteMode)}
-            >
-              {PALETTE_MODE_NAMES.map((name, i) => (
-                <option key={i} value={i}>{name}</option>
-              ))}
-            </select>
+          <div className="palette-controls">
+            {/* Background color */}
+            <div className="color-picker-row">
+              <div
+                className="color-swatch"
+                style={{ backgroundColor: background }}
+                onClick={() => {
+                  const input = document.createElement('input');
+                  input.type = 'color';
+                  input.value = background;
+                  input.onchange = () => onBackgroundChange(input.value);
+                  input.click();
+                }}
+                title="Click to change background"
+              />
+              <span className="color-label">Background</span>
+            </div>
+
+            {/* Load/Save buttons */}
+            <div className="input-row">
+              <button
+                className="icon-btn"
+                onClick={handleLoadPalette}
+                disabled={bpp > PALETTE_BITS}
+                title="Load palette"
+              >
+                <Upload size={14} />
+              </button>
+              <button
+                className="icon-btn"
+                onClick={handleSavePalette}
+                disabled={bpp > PALETTE_BITS}
+                title="Save palette"
+              >
+                <Download size={14} />
+              </button>
+            </div>
+
+            <input
+              type="file"
+              ref={fileInputRef}
+              style={{ display: 'none' }}
+              accept=".pal,.bin,*"
+              onChange={handleFileChange}
+            />
+
+            {/* Palette info */}
+            <div className="info-box">
+              {paletteInfo || 'Hover for info'}
+            </div>
           </div>
-
-          <div className="control-row">
-            <button
-              className="btn btn-sm"
-              onClick={handleLoadPalette}
-              disabled={bpp > PALETTE_BITS}
-            >
-              Load...
-            </button>
-            <button
-              className="btn btn-sm"
-              onClick={handleSavePalette}
-              disabled={bpp > PALETTE_BITS}
-            >
-              Save...
-            </button>
-          </div>
-
-          <input
-            type="file"
-            ref={fileInputRef}
-            style={{ display: 'none' }}
-            accept=".pal,.bin,*"
-            onChange={handleFileChange}
-          />
-
-          <div className="palette-info">{paletteInfo || '(hover for info)'}</div>
         </div>
       </div>
     </div>

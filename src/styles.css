@@ -1,24 +1,25 @@
-/* Binxelview React App Styles */
+/* Binxelview React App Styles - Figma-inspired Design */
 
 * {
   box-sizing: border-box;
 }
 
 :root {
-  --bg-color: #f0f0f0;
-  --panel-bg: #e8e8e8;
-  --panel-header-bg: #d0d0d0;
-  --border-color: #c0c0c0;
-  --input-bg: #ffffff;
-  --input-disabled-bg: #e0e0e0;
-  --text-color: #333333;
-  --text-muted: #666666;
-  --accent-color: #0066cc;
-  --button-bg: #e0e0e0;
-  --button-hover-bg: #d0d0d0;
-  --button-active-bg: #c0c0c0;
-  --menu-bg: #f8f8f8;
-  --menu-hover-bg: #e0e0e0;
+  /* Figma-like colors */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f5f5;
+  --bg-tertiary: #e8e8e8;
+  --border-color: #e5e5e5;
+  --border-focus: #0d99ff;
+  --text-primary: #1e1e1e;
+  --text-secondary: #6b6b6b;
+  --text-muted: #999999;
+  --accent-color: #0d99ff;
+  --input-bg: #f0f0f0;
+  --input-bg-hover: #e8e8e8;
+  --button-hover: rgba(0, 0, 0, 0.05);
+  --button-active: rgba(0, 0, 0, 0.1);
+  --sidebar-width: 260px;
 }
 
 html, body, #root {
@@ -26,10 +27,10 @@ html, body, #root {
   padding: 0;
   height: 100%;
   overflow: hidden;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  font-size: 12px;
-  color: var(--text-color);
-  background-color: var(--bg-color);
+  font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 11px;
+  color: var(--text-primary);
+  background-color: var(--bg-secondary);
 }
 
 .app {
@@ -43,10 +44,10 @@ html, body, #root {
 .menu-bar {
   display: flex;
   align-items: center;
-  background-color: var(--panel-bg);
+  background-color: var(--bg-primary);
   border-bottom: 1px solid var(--border-color);
-  padding: 0 4px;
-  height: 24px;
+  padding: 0 8px;
+  height: 32px;
   flex-shrink: 0;
 }
 
@@ -55,13 +56,15 @@ html, body, #root {
 }
 
 .menu-label {
-  padding: 4px 8px;
+  padding: 6px 10px;
   cursor: pointer;
   user-select: none;
+  border-radius: 4px;
+  font-weight: 500;
 }
 
 .menu-label:hover {
-  background-color: var(--menu-hover-bg);
+  background-color: var(--button-hover);
 }
 
 .menu-dropdown {
@@ -69,11 +72,13 @@ html, body, #root {
   position: absolute;
   top: 100%;
   left: 0;
-  background-color: var(--menu-bg);
+  background-color: var(--bg-primary);
   border: 1px solid var(--border-color);
-  box-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-  min-width: 180px;
+  border-radius: 6px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  min-width: 200px;
   z-index: 1000;
+  padding: 4px;
 }
 
 .menu-item:hover .menu-dropdown {
@@ -85,16 +90,17 @@ html, body, #root {
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  padding: 6px 12px;
+  padding: 8px 12px;
   border: none;
   background: none;
   text-align: left;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 11px;
+  border-radius: 4px;
 }
 
 .menu-dropdown button:hover:not(:disabled) {
-  background-color: var(--menu-hover-bg);
+  background-color: var(--button-hover);
 }
 
 .menu-dropdown button:disabled {
@@ -110,14 +116,15 @@ html, body, #root {
 
 .shortcut {
   color: var(--text-muted);
-  font-size: 11px;
+  font-size: 10px;
 }
 
 .file-name {
   margin-left: auto;
-  padding: 0 8px;
-  color: var(--text-muted);
+  padding: 0 12px;
+  color: var(--text-secondary);
   font-size: 11px;
+  font-weight: 500;
 }
 
 /* Main Content */
@@ -129,252 +136,491 @@ html, body, #root {
 
 /* Sidebar */
 .sidebar {
-  width: 220px;
+  width: var(--sidebar-width);
   flex-shrink: 0;
   overflow-y: auto;
-  background-color: var(--panel-bg);
+  background-color: var(--bg-primary);
   border-right: 1px solid var(--border-color);
-  padding: 4px;
 }
 
-/* Panels */
+/* Panels - Figma-style sections */
 .panel {
-  background-color: var(--panel-bg);
-  border: 1px solid var(--border-color);
-  margin-bottom: 4px;
-}
-
-.panel-header {
-  background-color: var(--panel-header-bg);
-  padding: 4px 8px;
-  font-weight: bold;
-  font-size: 11px;
   border-bottom: 1px solid var(--border-color);
 }
 
-.control-row {
+.panel-header {
+  padding: 12px 12px 8px;
+  font-weight: 600;
+  font-size: 11px;
+  color: var(--text-primary);
   display: flex;
   align-items: center;
+  justify-content: space-between;
+}
+
+.panel-header-actions {
+  display: flex;
   gap: 4px;
-  padding: 2px 4px;
 }
 
-.control-row.labels {
-  font-size: 10px;
-  color: var(--text-muted);
-  padding-bottom: 0;
+.panel-content {
+  padding: 0 12px 12px;
+  overflow: visible;
 }
 
-.control-row.labels span {
+/* Input Groups - Two column layout like Figma */
+.input-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.input-row:last-child {
+  margin-bottom: 0;
+}
+
+.input-group {
   flex: 1;
-  text-align: center;
-}
-
-/* Buttons */
-.btn {
-  padding: 4px 8px;
-  border: 1px solid var(--border-color);
-  background-color: var(--button-bg);
-  cursor: pointer;
-  font-size: 11px;
-  user-select: none;
-}
-
-.btn:hover {
-  background-color: var(--button-hover-bg);
-}
-
-.btn:active {
-  background-color: var(--button-active-bg);
-}
-
-.btn:disabled {
-  opacity: 0.5;
-  cursor: default;
-}
-
-.btn-sm {
-  padding: 2px 6px;
-  min-width: 40px;
-}
-
-/* Inputs */
-.input-number {
-  width: 100%;
-  flex: 1;
-  padding: 2px 4px;
-  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
   background-color: var(--input-bg);
+  border-radius: 4px;
+  padding: 0 8px;
+  height: 28px;
+  transition: background-color 0.15s;
+}
+
+.input-group:hover {
+  background-color: var(--input-bg-hover);
+}
+
+.input-group:focus-within {
+  outline: 2px solid var(--border-focus);
+  outline-offset: -2px;
+}
+
+.input-group .input-label {
   font-size: 11px;
-  font-family: monospace;
-}
-
-.input-number:disabled {
-  background-color: var(--input-disabled-bg);
-  color: var(--text-muted);
-}
-
-.input-number.hex {
-  font-weight: bold;
-}
-
-.input-number.bit-input {
-  max-width: 40px;
-  color: var(--accent-color);
-}
-
-/* Checkboxes */
-.checkbox-label {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  cursor: pointer;
+  color: var(--text-secondary);
+  min-width: 16px;
   user-select: none;
-  font-size: 11px;
 }
 
-.checkbox-label.small {
-  font-size: 10px;
+.input-group input {
   flex: 1;
-  justify-content: center;
+  border: none;
+  background: transparent;
+  font-size: 11px;
+  font-family: inherit;
+  color: var(--text-primary);
+  padding: 0;
+  min-width: 0;
+  outline: none;
 }
 
-.checkbox-label input {
+.input-group input::-webkit-inner-spin-button,
+.input-group input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
   margin: 0;
 }
 
-/* Selects */
-.preset-select,
-.palette-mode-select {
+.input-group input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.input-group.disabled {
+  opacity: 0.5;
+}
+
+.input-group.disabled input {
+  cursor: not-allowed;
+}
+
+/* Single wide input */
+.input-wide {
   flex: 1;
-  padding: 2px 4px;
-  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
   background-color: var(--input-bg);
-  font-size: 11px;
+  border-radius: 4px;
+  padding: 0 8px;
+  height: 28px;
 }
 
-/* Labels */
-.label {
-  min-width: 40px;
-  font-size: 11px;
+.input-wide:focus-within {
+  outline: 2px solid var(--border-focus);
+  outline-offset: -2px;
 }
 
-/* Pixel Info */
-.pixel-info {
+.input-wide input {
   flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 11px;
   font-family: monospace;
-  font-size: 10px;
-  white-space: pre;
-  color: var(--text-muted);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  min-height: 24px;
-  max-height: 24px;
+  color: var(--text-primary);
+  padding: 0;
+  outline: none;
 }
 
-/* Disabled message */
-.disabled-message {
-  padding: 8px;
-  color: var(--text-muted);
-  font-style: italic;
-  font-size: 10px;
-  text-align: center;
+/* Compact icon buttons */
+.icon-btn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 12px;
+  transition: background-color 0.15s;
 }
 
-/* Bit Stride Panel */
-.bit-stride-table {
-  max-height: 120px;
-  overflow-y: auto;
+.icon-btn:hover {
+  background-color: var(--button-hover);
+  color: var(--text-primary);
 }
 
-.bit-stride-header {
+.icon-btn:active {
+  background-color: var(--button-active);
+}
+
+.icon-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.icon-btn.active {
+  background-color: var(--button-active);
+  color: var(--text-primary);
+}
+
+/* Text buttons */
+.text-btn {
+  padding: 6px 12px;
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: all 0.15s;
+}
+
+.text-btn:hover {
+  background-color: var(--button-hover);
+  color: var(--text-primary);
+}
+
+.text-btn:active {
+  background-color: var(--button-active);
+}
+
+.text-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Button row */
+.btn-row {
   display: flex;
   gap: 4px;
-  padding: 2px 4px;
+  margin-bottom: 8px;
+}
+
+/* Checkbox - Figma style */
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+  padding: 4px 0;
+  font-size: 11px;
+  color: var(--text-primary);
+}
+
+.checkbox input {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  accent-color: var(--accent-color);
+}
+
+.checkbox.compact {
   font-size: 10px;
-  color: var(--text-muted);
-  background-color: var(--panel-header-bg);
+  gap: 4px;
 }
 
-.bit-stride-header span {
+/* Select dropdown - Figma style */
+.select-input {
   flex: 1;
+  padding: 6px 8px;
+  border: none;
+  background-color: var(--input-bg);
+  border-radius: 4px;
+  font-size: 11px;
+  font-family: inherit;
+  color: var(--text-primary);
+  cursor: pointer;
+  outline: none;
+}
+
+.select-input:hover {
+  background-color: var(--input-bg-hover);
+}
+
+.select-input:focus {
+  outline: 2px solid var(--border-focus);
+  outline-offset: -2px;
+}
+
+/* Property labels - Figma style section headers */
+.prop-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+  margin-top: 8px;
+}
+
+.prop-label:first-child {
+  margin-top: 0;
+}
+
+/* Section labels */
+.section-label {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+/* Info box for displaying text */
+.info-box {
+  font-family: 'SF Mono', Monaco, Consolas, monospace;
+  font-size: 10px;
+  color: var(--text-secondary);
+  background-color: var(--input-bg);
+  border-radius: 4px;
+  padding: 8px;
+  min-height: 32px;
+  white-space: pre;
+}
+
+/* Input icon */
+.input-icon {
+  color: var(--text-secondary);
+  flex-shrink: 0;
+  margin-right: 4px;
+}
+
+/* Input suffix */
+.input-suffix {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-left: 2px;
+  flex-shrink: 0;
+}
+
+/* Small input group */
+.input-group.small {
+  flex: 0 0 60px;
+}
+
+/* Divider */
+.divider {
+  height: 1px;
+  background-color: var(--border-color);
+  margin: 8px 0;
+}
+
+/* Pixel Info display */
+.pixel-info {
+  font-family: 'SF Mono', Monaco, Consolas, monospace;
+  font-size: 10px;
+  white-space: pre;
+  color: var(--text-secondary);
+  background-color: var(--input-bg);
+  border-radius: 4px;
+  padding: 8px;
+  min-height: 32px;
+}
+
+/* Stride controls - compact vertical layout */
+.stride-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.stride-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  overflow: visible;
+}
+
+.stride-label {
+  font-size: 10px;
+  color: var(--text-secondary);
+  min-width: 32px;
+  flex-shrink: 0;
+}
+
+.stride-inputs {
+  flex: 1;
+  display: flex;
+  gap: 4px;
+  min-width: 0;
+}
+
+.stride-input {
+  flex: 1;
+  min-width: 0;
+  background-color: var(--input-bg);
+  border-radius: 4px;
+  padding: 0 6px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+}
+
+.stride-input input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 10px;
+  font-family: inherit;
+  color: var(--text-primary);
+  padding: 0;
+  outline: none;
   text-align: center;
+  min-width: 0;
 }
 
-.bit-stride-header span:first-child {
-  max-width: 24px;
+.stride-input input::-webkit-inner-spin-button,
+.stride-input input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
-.bit-stride-rows {
-  max-height: 100px;
+.stride-input.disabled {
+  opacity: 0.4;
+}
+
+.stride-input.bit input {
+  color: var(--accent-color);
+}
+
+.stride-auto {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 20px;
+}
+
+.stride-auto input {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  cursor: pointer;
+  accent-color: var(--accent-color);
+}
+
+/* Bit stride table */
+.bit-stride-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 120px;
   overflow-y: auto;
 }
 
 .bit-stride-row {
   display: flex;
+  align-items: center;
   gap: 4px;
-  padding: 1px 4px;
 }
 
-.bit-stride-row .bit-index {
-  min-width: 24px;
-  text-align: center;
+.bit-stride-index {
   font-size: 10px;
   color: var(--text-muted);
-  background-color: var(--panel-header-bg);
+  min-width: 20px;
+  text-align: center;
+}
+
+/* Palette panel */
+.palette-layout {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  gap: 12px;
 }
 
-.bit-stride-row .input-number {
-  flex: 1;
-}
-
-/* Tiling Panel */
-.tiling-panel .control-row .label {
-  min-width: 40px;
-}
-
-/* Palette Panel */
-.palette-content {
-  display: flex;
-  gap: 4px;
-  padding: 4px;
+.palette-preview-container {
+  flex-shrink: 0;
 }
 
 .palette-preview {
   width: 100px;
   height: 100px;
-  border: 1px solid var(--border-color);
+  border-radius: 4px;
   cursor: pointer;
   image-rendering: pixelated;
-  flex-shrink: 0;
+  border: 1px solid var(--border-color);
 }
 
 .palette-controls {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 8px;
 }
 
-.palette-info {
-  font-family: monospace;
-  font-size: 9px;
-  white-space: pre;
-  color: var(--text-muted);
-  padding: 2px;
-  background-color: var(--input-bg);
-  border: 1px solid var(--border-color);
-  min-height: 24px;
+.color-picker-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.color-box {
-  width: 20px;
-  height: 20px;
+.color-swatch {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
   border: 1px solid var(--border-color);
   cursor: pointer;
+  flex-shrink: 0;
+}
+
+.color-label {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.palette-info-box {
+  font-family: 'SF Mono', Monaco, Consolas, monospace;
+  font-size: 10px;
+  color: var(--text-secondary);
+  background-color: var(--input-bg);
+  border-radius: 4px;
+  padding: 6px 8px;
+  min-height: 32px;
+  white-space: pre;
+}
+
+/* Disabled state message */
+.disabled-message {
+  padding: 12px;
+  color: var(--text-muted);
+  font-size: 10px;
+  text-align: center;
+  font-style: italic;
 }
 
 /* Pixel Viewer */
@@ -404,31 +650,181 @@ html, body, #root {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  padding: 40px;
-  border: 3px dashed #a0a0a0;
-  border-radius: 8px;
-  color: #e0e0e0;
-  font-size: 16px;
+  padding: 48px;
+  border: 2px dashed #a0a0a0;
+  border-radius: 12px;
+  color: #d0d0d0;
+  font-size: 14px;
   text-align: center;
   pointer-events: none;
 }
 
-/* Scrollbars */
+/* Scrollbars - Figma style */
 ::-webkit-scrollbar {
-  width: 12px;
-  height: 12px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--panel-bg);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: var(--border-color);
-  border: 2px solid var(--panel-bg);
-  border-radius: 6px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #a0a0a0;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Toggle button group */
+.toggle-group {
+  display: flex;
+  background-color: var(--input-bg);
+  border-radius: 4px;
+  padding: 2px;
+}
+
+.toggle-btn {
+  flex: 1;
+  padding: 4px 8px;
+  border: none;
+  background: transparent;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: all 0.15s;
+}
+
+.toggle-btn.active {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.toggle-btn:hover:not(.active) {
+  color: var(--text-primary);
+}
+
+/* Utility classes */
+.mt-8 { margin-top: 8px; }
+.mb-8 { margin-bottom: 8px; }
+.flex { display: flex; }
+.gap-4 { gap: 4px; }
+.gap-8 { gap: 8px; }
+.flex-1 { flex: 1; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+
+/* Figma-style field layout */
+.field-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.field-row:last-child {
+  margin-bottom: 0;
+}
+
+/* Half-width field (like Figma's W/H side by side) */
+.field-half {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Full-width field */
+.field-full {
+  flex: 1 1 100%;
+}
+
+/* Field with label above */
+.field-label {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+/* Byte/Bit field with icon */
+.byte-bit-field {
+  display: flex;
+  gap: 4px;
+}
+
+.byte-field,
+.bit-field {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  background-color: var(--input-bg);
+  border-radius: 4px;
+  padding: 0 6px;
+  height: 28px;
+  gap: 4px;
+}
+
+.byte-field:hover,
+.bit-field:hover {
+  background-color: var(--input-bg-hover);
+}
+
+.byte-field:focus-within,
+.bit-field:focus-within {
+  outline: 2px solid var(--border-focus);
+  outline-offset: -2px;
+}
+
+.byte-field .field-icon,
+.bit-field .field-icon {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.bit-field input {
+  color: var(--accent-color);
+}
+
+.byte-field input,
+.bit-field input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 11px;
+  font-family: inherit;
+  color: var(--text-primary);
+  padding: 0;
+  outline: none;
+  min-width: 0;
+}
+
+.byte-field input::-webkit-inner-spin-button,
+.byte-field input::-webkit-outer-spin-button,
+.bit-field input::-webkit-inner-spin-button,
+.bit-field input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.byte-field.disabled,
+.bit-field.disabled {
+  opacity: 0.4;
+}
+
+/* Auto checkbox for stride fields */
+.auto-checkbox {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.auto-checkbox input {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  cursor: pointer;
+  accent-color: var(--accent-color);
 }

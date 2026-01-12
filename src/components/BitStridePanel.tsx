@@ -1,6 +1,7 @@
-// Bit stride panel for planar graphics configuration
+// Bit stride panel for planar graphics configuration - Figma-style design
 import React from 'react';
-import { Preset, MAX_BPP } from '../types';
+import { Preset } from '../types';
+import { ByteIcon, BitIcon } from './Icons';
 
 interface BitStridePanelProps {
   preset: Preset;
@@ -22,40 +23,43 @@ export function BitStridePanel({ preset, onPresetChange }: BitStridePanelProps) 
 
   if (preset.chunky) {
     return (
-      <div className="panel bit-stride-panel">
+      <div className="panel">
         <div className="panel-header">Bit Planes</div>
         <div className="disabled-message">
-          (Enable planar mode by unchecking "Chunky")
+          Disable chunky mode for planar bit planes
         </div>
       </div>
     );
   }
 
   return (
-    <div className="panel bit-stride-panel">
+    <div className="panel">
       <div className="panel-header">Bit Planes</div>
-      <div className="bit-stride-table">
-        <div className="bit-stride-header">
-          <span>#</span>
-          <span>Byte</span>
-          <span>Bit</span>
-        </div>
-        <div className="bit-stride-rows">
+      <div className="panel-content">
+        <div className="bit-stride-list">
           {Array.from({ length: preset.bpp }, (_, i) => (
-            <div key={i} className="bit-stride-row">
-              <span className="bit-index">{i}</span>
-              <input
-                type="number"
-                className="input-number"
-                value={preset.bitStrideByte[i]}
-                onChange={(e) => handleBitStrideByteChange(i, parseInt(e.target.value) || 0)}
-              />
-              <input
-                type="number"
-                className="input-number bit-input"
-                value={preset.bitStrideBit[i]}
-                onChange={(e) => handleBitStrideBitChange(i, parseInt(e.target.value) || 0)}
-              />
+            <div key={i} className="field-row" style={{ marginBottom: 4 }}>
+              <div className="field-half">
+                <div className="field-label">{i}</div>
+                <div className="byte-bit-field">
+                  <div className="byte-field">
+                    <ByteIcon size={12} className="field-icon" />
+                    <input
+                      type="number"
+                      value={preset.bitStrideByte[i]}
+                      onChange={(e) => handleBitStrideByteChange(i, parseInt(e.target.value) || 0)}
+                    />
+                  </div>
+                  <div className="bit-field">
+                    <BitIcon size={12} className="field-icon" />
+                    <input
+                      type="number"
+                      value={preset.bitStrideBit[i]}
+                      onChange={(e) => handleBitStrideBitChange(i, parseInt(e.target.value) || 0)}
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
           ))}
         </div>
