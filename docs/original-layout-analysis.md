@@ -258,15 +258,4 @@ The large preview dominates, with controls arranged beside it. This prioritizes:
 | **Context sensitivity** | DataGrid disabled when Chunky |
 | **Compact information density** | Everything visible at once |
 
-### 11. What We Kept vs Changed in React Port
 
-| Original | React Port | Reasoning |
-|----------|------------|-----------|
-| GroupBox with title | Panel with header | Same concept, modern styling |
-| Byte/Bit dual inputs | ByteIcon/BitIcon fields | More visual distinction |
-| Button-as-label | Field labels above | Clearer for new users |
-| Three column stride | Section headers per row | Better for narrow sidebar |
-| DataGridView | Scrollable list | Simpler implementation |
-| Blue ForeColor | CSS accent-color | Same visual cue |
-
-The original design is actually quite thoughtful - it packs a lot of functionality into a small space while maintaining consistency. The main weakness is discoverability (you have to know to right-click buttons), which modern Figma-style UI addresses with more explicit controls.
