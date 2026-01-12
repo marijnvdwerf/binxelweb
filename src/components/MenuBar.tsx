@@ -1,5 +1,6 @@
 // Menu bar component
 import React, { useRef, useCallback } from 'react';
+import { PanelLeft, PanelLeftClose } from 'lucide-react';
 
 interface MenuBarProps {
   dataFile: string;
@@ -7,6 +8,7 @@ interface MenuBarProps {
   decimalPosition: boolean;
   snapScroll: boolean;
   horizontalLayout: boolean;
+  sidebarCollapsed: boolean;
   onOpenFile: (file: File) => void;
   onReload: () => void;
   onSaveImage: () => void;
@@ -14,6 +16,7 @@ interface MenuBarProps {
   onToggleDecimalPosition: () => void;
   onToggleSnapScroll: () => void;
   onToggleHorizontalLayout: () => void;
+  onToggleSidebar: () => void;
 }
 
 export function MenuBar({
@@ -22,6 +25,7 @@ export function MenuBar({
   decimalPosition,
   snapScroll,
   horizontalLayout,
+  sidebarCollapsed,
   onOpenFile,
   onReload,
   onSaveImage,
@@ -29,6 +33,7 @@ export function MenuBar({
   onToggleDecimalPosition,
   onToggleSnapScroll,
   onToggleHorizontalLayout,
+  onToggleSidebar,
 }: MenuBarProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -46,6 +51,14 @@ export function MenuBar({
 
   return (
     <div className="menu-bar">
+      <button
+        className="icon-btn sidebar-toggle"
+        onClick={onToggleSidebar}
+        title={sidebarCollapsed ? 'Show sidebar (Ctrl+B)' : 'Hide sidebar (Ctrl+B)'}
+      >
+        {sidebarCollapsed ? <PanelLeft size={16} /> : <PanelLeftClose size={16} />}
+      </button>
+
       <div className="menu-item">
         <span className="menu-label">File</span>
         <div className="menu-dropdown">

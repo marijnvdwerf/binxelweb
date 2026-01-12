@@ -171,6 +171,31 @@ export function createPaletteLookup(ctx: PaletteContext): (index: number) => num
   return (index: number) => lookup[index] ?? 0xFF808080;
 }
 
+// Generate palette as array of hex color strings
+export function generatePalette(ctx: PaletteContext): string[] {
+  const { mode, bpp, customPalette, randomSeed } = ctx;
+  const effectiveBpp = Math.min(bpp, PALETTE_BITS);
+  const paletteSize = 1 << effectiveBpp;
+  const result: string[] = [];
+
+  if (mode === PaletteMode.CUSTOM) {
+    for (let i = 0; i < paletteSize; i++) {
+      if (i < customPalette.length && customPalette[i]) {
+        result.push(customPalette[i]);
+      } else {
+        result.push(getDefaultCustomColor(i));
+      }
+    }
+  } else {
+    for (let i = 0; i < paletteSize; i++) {
+      const argb = getAutoPaletteColor(i, mode, effectiveBpp, randomSeed);
+      result.push(argbToHex(argb));
+    }
+  }
+
+  return result;
+}
+
 // Initialize a default custom palette (empty - generated on demand)
 export function createDefaultCustomPalette(): string[] {
   return []; // Return empty array - colors generated on-demand

@@ -1,29 +1,35 @@
 // Main Binxelview application component
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useBinxelview } from './hooks/useBinxelview';
-import { MenuBar } from './components/MenuBar';
 import { PositionPanel } from './components/PositionPanel';
 import { PackingPanel } from './components/PackingPanel';
 import { TilingPanel } from './components/TilingPanel';
 import { PalettePanel } from './components/PalettePanel';
 import { BitStridePanel } from './components/BitStridePanel';
 import { PixelViewer } from './components/PixelViewer';
+import { PixelInfoPanel } from './components/PixelInfoPanel';
 import './styles.css';
 
 export function App() {
   const [state, actions] = useBinxelview();
   const [pixelInfo, setPixelInfo] = useState('');
   const containerRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const lastFileRef = useRef<File | null>(null);
 
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Check if focused on an input
+      const isInputFocused = document.activeElement?.tagName === 'INPUT' ||
+        document.activeElement?.tagName === 'SELECT' ||
+        document.activeElement?.tagName === 'TEXTAREA';
+
       if (e.ctrlKey || e.metaKey) {
         switch (e.key.toLowerCase()) {
           case 'o':
             e.preventDefault();
-            document.querySelector<HTMLInputElement>('input[type="file"]')?.click();
+            fileInputRef.current?.click();
             break;
           case 'r':
             e.preventDefault();
@@ -32,12 +38,53 @@ export function App() {
             }
             break;
         }
+      } else if (!isInputFocused) {
+        // Shortcuts that only work when not in an input
+        switch (e.key) {
+          case 'ArrowLeft':
+            e.preventDefault();
+            actions.advancePixel(-1);
+            break;
+          case 'ArrowRight':
+            e.preventDefault();
+            actions.advancePixel(1);
+            break;
+          case 'ArrowUp':
+            e.preventDefault();
+            actions.advanceRow(-1);
+            break;
+          case 'ArrowDown':
+            e.preventDefault();
+            actions.advanceRow(1);
+            break;
+          case 'PageUp':
+            e.preventDefault();
+            actions.advanceNext(-1);
+            break;
+          case 'PageDown':
+            e.preventDefault();
+            actions.advanceNext(1);
+            break;
+          case '+':
+          case '=':
+            e.preventDefault();
+            actions.setZoom(Math.min(32, state.zoom + 1));
+            break;
+          case '-':
+            e.preventDefault();
+            actions.setZoom(Math.max(1, state.zoom - 1));
+            break;
+          case 'g':
+            e.preventDefault();
+            actions.toggleGrid();
+            break;
+        }
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [actions]);
+  }, [actions, state.zoom]);
 
   // Drag and drop
   useEffect(() => {
@@ -68,43 +115,22 @@ export function App() {
     };
   }, [actions]);
 
-  const handleOpenFile = useCallback((file: File) => {
-    lastFileRef.current = file;
-    actions.loadFile(file);
-  }, [actions]);
-
-  const handleReload = useCallback(() => {
-    if (lastFileRef.current) {
-      actions.loadFile(lastFileRef.current);
+  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      lastFileRef.current = file;
+      actions.loadFile(file);
     }
+    e.target.value = '';
   }, [actions]);
-
-  const handleSaveImage = useCallback(() => {
-    // Get canvas and save as PNG
-    const canvas = document.querySelector<HTMLCanvasElement>('.pixel-canvas');
-    if (!canvas) return;
-
-    const link = document.createElement('a');
-    link.download = `${state.dataFile || 'image'}.${state.posByte.toString(16).padStart(8, '0')}.${state.posBit}.png`;
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-  }, [state.dataFile, state.posByte, state.posBit]);
 
   return (
     <div className="app" ref={containerRef}>
-      <MenuBar
-        dataFile={state.dataFile}
-        hideGrid={state.hideGrid}
-        decimalPosition={state.decimalPosition}
-        snapScroll={state.snapScroll}
-        horizontalLayout={state.horizontalLayout}
-        onOpenFile={handleOpenFile}
-        onReload={handleReload}
-        onSaveImage={handleSaveImage}
-        onToggleGrid={actions.toggleGrid}
-        onToggleDecimalPosition={actions.toggleDecimalPosition}
-        onToggleSnapScroll={actions.toggleSnapScroll}
-        onToggleHorizontalLayout={actions.toggleHorizontalLayout}
+      <input
+        type="file"
+        ref={fileInputRef}
+        style={{ display: 'none' }}
+        onChange={handleFileChange}
       />
 
       <div className="main-content">
@@ -113,13 +139,8 @@ export function App() {
             posByte={state.posByte}
             posBit={state.posBit}
             zoom={state.zoom}
-            decimalPosition={state.decimalPosition}
-            pixelInfo={pixelInfo}
             onPositionChange={actions.setPosition}
-            onAdvanceByte={actions.advanceByte}
-            onAdvanceBit={actions.advanceBit}
             onZoomChange={actions.setZoom}
-            onReset={actions.resetPosition}
           />
 
           <PackingPanel
@@ -131,12 +152,12 @@ export function App() {
             onAdvanceNext={actions.advanceNext}
           />
 
-          <TilingPanel
+          <BitStridePanel
             preset={state.preset}
             onPresetChange={actions.updatePreset}
           />
 
-          <BitStridePanel
+          <TilingPanel
             preset={state.preset}
             onPresetChange={actions.updatePreset}
           />
@@ -153,6 +174,9 @@ export function App() {
             onRegenerateRandom={actions.regenerateRandomPalette}
             onLoadPalette={actions.loadCustomPalette}
           />
+
+          {/* Pixel info at bottom */}
+          <PixelInfoPanel pixelInfo={pixelInfo} />
         </div>
 
         <div className="viewer-container">

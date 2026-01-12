@@ -1,7 +1,8 @@
 // Tiling control panel component - Figma-style design
-import React from 'react';
+import React, { useState } from 'react';
+import { ChevronRight } from 'lucide-react';
 import { Preset, TwiddleMode } from '../types';
-import { ByteIcon, BitIcon } from './Icons';
+import { ByteBitInput } from './ByteBitInput';
 
 interface TilingPanelProps {
   preset: Preset;
@@ -9,115 +10,83 @@ interface TilingPanelProps {
 }
 
 export function TilingPanel({ preset, onPresetChange }: TilingPanelProps) {
+  const [isCollapsed, setIsCollapsed] = useState(true);
+
   return (
     <div className="panel">
-      <div className="panel-header">Tiling</div>
-      <div className="panel-content">
-        {/* Tile size - X and Y side by side with labels above */}
-        <div className="field-row">
-          <div className="field-half">
-            <div className="field-label">X</div>
-            <div className="input-group">
-              <input
-                type="number"
-                value={preset.tileSizeX}
-                min={0}
-                onChange={(e) => onPresetChange({ tileSizeX: Math.max(0, parseInt(e.target.value) || 0) })}
-              />
-            </div>
-          </div>
-          <div className="field-half">
-            <div className="field-label">Y</div>
-            <div className="input-group">
-              <input
-                type="number"
-                value={preset.tileSizeY}
-                min={0}
-                onChange={(e) => onPresetChange({ tileSizeY: Math.max(0, parseInt(e.target.value) || 0) })}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Tile stride X - with byte/bit fields */}
-        <div className="field-row">
-          <div className="field-half">
-            <div className="field-label">Stride X</div>
-            <div className="byte-bit-field">
-              <div className="byte-field">
-                <ByteIcon size={12} className="field-icon" />
-                <input
-                  type="number"
-                  value={preset.tileStrideByteX}
-                  onChange={(e) => onPresetChange({ tileStrideByteX: parseInt(e.target.value) || 0 })}
-                />
-              </div>
-              <div className="bit-field">
-                <BitIcon size={12} className="field-icon" />
-                <input
-                  type="number"
-                  value={preset.tileStrideBitX}
-                  onChange={(e) => onPresetChange({ tileStrideBitX: parseInt(e.target.value) || 0 })}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Tile stride Y */}
-        <div className="field-row">
-          <div className="field-half">
-            <div className="field-label">Stride Y</div>
-            <div className="byte-bit-field">
-              <div className="byte-field">
-                <ByteIcon size={12} className="field-icon" />
-                <input
-                  type="number"
-                  value={preset.tileStrideByteY}
-                  onChange={(e) => onPresetChange({ tileStrideByteY: parseInt(e.target.value) || 0 })}
-                />
-              </div>
-              <div className="bit-field">
-                <BitIcon size={12} className="field-icon" />
-                <input
-                  type="number"
-                  value={preset.tileStrideBitY}
-                  onChange={(e) => onPresetChange({ tileStrideBitY: parseInt(e.target.value) || 0 })}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Twiddle mode toggle */}
-        <div className="field-row">
-          <div className="field-half">
-            <div className="field-label">Twiddle</div>
-            <div className="toggle-group">
-              <button
-                className={`toggle-btn ${preset.twiddle === TwiddleMode.NONE ? 'active' : ''}`}
-                onClick={() => onPresetChange({ twiddle: TwiddleMode.NONE })}
-              >
-                None
-              </button>
-              <button
-                className={`toggle-btn ${preset.twiddle === TwiddleMode.Z ? 'active' : ''}`}
-                onClick={() => onPresetChange({ twiddle: TwiddleMode.Z })}
-                title="Z-order (Morton) twiddle"
-              >
-                Z
-              </button>
-              <button
-                className={`toggle-btn ${preset.twiddle === TwiddleMode.N ? 'active' : ''}`}
-                onClick={() => onPresetChange({ twiddle: TwiddleMode.N })}
-                title="N-order twiddle"
-              >
-                N
-              </button>
-            </div>
-          </div>
-        </div>
+      <div
+        className={`panel-header collapsible ${isCollapsed ? 'collapsed' : ''}`}
+        onClick={() => setIsCollapsed(!isCollapsed)}
+      >
+        <ChevronRight size={14} className={`collapse-chevron ${isCollapsed ? '' : 'expanded'}`} />
+        Tiling
       </div>
+      {!isCollapsed && <div className="panel-content">
+        {/* Tile size - 2 column grid */}
+        <div className="field-label">Size</div>
+        <div className="tiling-grid">
+          <div className="tiling-input">
+            <span className="tiling-label">X</span>
+            <input
+              type="number"
+              value={preset.tileSizeX}
+              min={0}
+              onChange={(e) => onPresetChange({ tileSizeX: Math.max(0, parseInt(e.target.value) || 0) })}
+            />
+          </div>
+          <div className="tiling-input">
+            <span className="tiling-label">Y</span>
+            <input
+              type="number"
+              value={preset.tileSizeY}
+              min={0}
+              onChange={(e) => onPresetChange({ tileSizeY: Math.max(0, parseInt(e.target.value) || 0) })}
+            />
+          </div>
+        </div>
+
+        {/* Tile stride - 2 column grid with ByteBitInput */}
+        <div className="field-label">Stride</div>
+        <div className="tiling-grid">
+          <ByteBitInput
+            byteValue={preset.tileStrideByteX}
+            bitValue={preset.tileStrideBitX}
+            onChange={(byte, bit) => onPresetChange({ tileStrideByteX: byte, tileStrideBitX: bit })}
+            label="X"
+          />
+          <ByteBitInput
+            byteValue={preset.tileStrideByteY}
+            bitValue={preset.tileStrideBitY}
+            onChange={(byte, bit) => onPresetChange({ tileStrideByteY: byte, tileStrideBitY: bit })}
+            label="Y"
+          />
+        </div>
+
+        {/* Pattern (Twiddle mode) */}
+        <div className="field-label">Pattern</div>
+        <div className="toggle-group">
+          <button
+            className={`toggle-btn ${preset.twiddle === TwiddleMode.NONE ? 'active' : ''}`}
+            onClick={() => onPresetChange({ twiddle: TwiddleMode.NONE })}
+          >
+            Linear
+          </button>
+          <button
+            className={`toggle-btn ${preset.twiddle === TwiddleMode.Z ? 'active' : ''}`}
+            onClick={() => onPresetChange({ twiddle: TwiddleMode.Z })}
+            title="Z-order / Morton curve"
+          >
+            Z-Order
+          </button>
+          <button
+            className={`toggle-btn ${preset.twiddle === TwiddleMode.N ? 'active' : ''}`}
+            onClick={() => onPresetChange({ twiddle: TwiddleMode.N })}
+            title="N-order pattern"
+          >
+            N-Order
+          </button>
+        </div>
+      </div>}
     </div>
   );
 }

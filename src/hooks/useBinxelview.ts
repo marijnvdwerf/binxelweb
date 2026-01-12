@@ -42,7 +42,6 @@ export interface BinxelviewActions {
   advancePixel: (delta: number) => void;
   advanceRow: (delta: number) => void;
   advanceNext: (delta: number) => void;
-  resetPosition: () => void;
 
   // Display actions
   setZoom: (zoom: number) => void;
@@ -221,10 +220,6 @@ export function useBinxelview(): [BinxelviewState, BinxelviewActions] {
     });
   }, [normalizePosition, applyAutoStrides]);
 
-  const resetPosition = useCallback(() => {
-    setState(s => ({ ...s, posByte: 0, posBit: 0 }));
-  }, []);
-
   const setZoom = useCallback((zoom: number) => {
     setState(s => ({ ...s, zoom: Math.max(1, Math.min(ZOOM_MAX, zoom)) }));
   }, []);
@@ -311,7 +306,6 @@ export function useBinxelview(): [BinxelviewState, BinxelviewActions] {
     advancePixel,
     advanceRow,
     advanceNext,
-    resetPosition,
     setZoom,
     toggleGrid,
     setBackground,

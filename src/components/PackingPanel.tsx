@@ -1,8 +1,8 @@
 // Packing control panel component - Figma-style design
-import React from 'react';
+import React, { useMemo } from 'react';
+import { Link2, Link2Off } from 'lucide-react';
 import { Preset, MAX_BPP } from '../types';
-import { BUILT_IN_PRESETS } from '../presets';
-import { ByteIcon, BitIcon } from './Icons';
+import { ByteBitInput } from './ByteBitInput';
 
 interface PackingPanelProps {
   preset: Preset;
@@ -16,206 +16,116 @@ interface PackingPanelProps {
 export function PackingPanel({
   preset,
   onPresetChange,
-  onPresetSelect,
-  onAdvancePixel,
-  onAdvanceRow,
-  onAdvanceNext,
 }: PackingPanelProps) {
+  // Calculate auto stride values
+  const autoStrides = useMemo(() => {
+    const bitsPerPixel = preset.bpp;
+    const pixelByte = Math.floor(bitsPerPixel / 8);
+    const pixelBit = bitsPerPixel % 8;
+    const rowBits = preset.width * bitsPerPixel;
+    const rowByte = Math.floor(rowBits / 8);
+    const rowBit = rowBits % 8;
+    const nextBits = preset.width * preset.height * bitsPerPixel;
+    const nextByte = Math.floor(nextBits / 8);
+    const nextBit = nextBits % 8;
+    return {
+      pixelByte, pixelBit,
+      rowByte, rowBit,
+      nextByte, nextBit,
+    };
+  }, [preset.bpp, preset.width, preset.height]);
+
   return (
     <div className="panel">
-      <div className="panel-header">Packing</div>
+      <div className="panel-header">Format</div>
       <div className="panel-content">
-        {/* Preset dropdown - full width */}
-        <div className="field-row">
-          <select
-            className="select-input"
-            value={preset.name}
-            onChange={(e) => onPresetSelect(e.target.value)}
+        {/* BPP row: value | link | pixel stride */}
+        <div className="field-label">BPP</div>
+        <div className="format-row">
+          <div className="format-value">
+            <input
+              type="number"
+              value={preset.bpp}
+              min={1}
+              max={MAX_BPP}
+              onChange={(e) => onPresetChange({ bpp: Math.max(1, Math.min(MAX_BPP, parseInt(e.target.value) || 1)) })}
+            />
+          </div>
+          <button
+            className={`auto-toggle-btn ${preset.pixelStrideAuto ? 'linked' : ''}`}
+            onClick={() => onPresetChange({ pixelStrideAuto: !preset.pixelStrideAuto })}
+            title={preset.pixelStrideAuto ? 'Auto-calculated (click to set manually)' : 'Manual (click to auto-calculate)'}
           >
-            <option value="">Custom</option>
-            {BUILT_IN_PRESETS.map((p) => (
-              <option key={p.name} value={p.name}>{p.name}</option>
-            ))}
-          </select>
+            {preset.pixelStrideAuto ? <Link2 size={14} /> : <Link2Off size={14} />}
+          </button>
+          <ByteBitInput
+            byteValue={preset.pixelStrideByte}
+            bitValue={preset.pixelStrideBit}
+            onChange={(byte, bit) => onPresetChange({ pixelStrideByte: byte, pixelStrideBit: bit })}
+            disabled={preset.pixelStrideAuto}
+            autoByteValue={autoStrides.pixelByte}
+            autoBitValue={autoStrides.pixelBit}
+            isAuto={preset.pixelStrideAuto}
+          />
         </div>
 
-        {/* Format checkboxes */}
-        <div className="field-row">
-          <label className="checkbox">
+        {/* Width row: value | link | row stride */}
+        <div className="field-label">Width</div>
+        <div className="format-row">
+          <div className="format-value">
             <input
-              type="checkbox"
-              checked={!preset.littleEndian}
-              onChange={(e) => onPresetChange({ littleEndian: !e.target.checked })}
+              type="number"
+              value={preset.width}
+              min={1}
+              max={65536}
+              onChange={(e) => onPresetChange({ width: Math.max(1, parseInt(e.target.value) || 1) })}
             />
-            Reverse Byte
-          </label>
-          <label className="checkbox">
-            <input
-              type="checkbox"
-              checked={preset.chunky}
-              onChange={(e) => onPresetChange({ chunky: e.target.checked })}
-            />
-            Chunky
-          </label>
+          </div>
+          <button
+            className={`auto-toggle-btn ${preset.rowStrideAuto ? 'linked' : ''}`}
+            onClick={() => onPresetChange({ rowStrideAuto: !preset.rowStrideAuto })}
+            title={preset.rowStrideAuto ? 'Auto-calculated (click to set manually)' : 'Manual (click to auto-calculate)'}
+          >
+            {preset.rowStrideAuto ? <Link2 size={14} /> : <Link2Off size={14} />}
+          </button>
+          <ByteBitInput
+            byteValue={preset.rowStrideByte}
+            bitValue={preset.rowStrideBit}
+            onChange={(byte, bit) => onPresetChange({ rowStrideByte: byte, rowStrideBit: bit })}
+            disabled={preset.rowStrideAuto}
+            autoByteValue={autoStrides.rowByte}
+            autoBitValue={autoStrides.rowBit}
+            isAuto={preset.rowStrideAuto}
+          />
         </div>
 
-        {/* BPP, W, H - three columns with labels */}
-        <div className="field-row">
-          <div className="field-half">
-            <div className="field-label">BPP</div>
-            <div className="input-group">
-              <input
-                type="number"
-                value={preset.bpp}
-                min={1}
-                max={MAX_BPP}
-                onChange={(e) => onPresetChange({ bpp: Math.max(1, Math.min(MAX_BPP, parseInt(e.target.value) || 1)) })}
-              />
-            </div>
-          </div>
-          <div className="field-half">
-            <div className="field-label">W</div>
-            <div className="input-group">
-              <input
-                type="number"
-                value={preset.width}
-                min={1}
-                max={65536}
-                onChange={(e) => onPresetChange({ width: Math.max(1, parseInt(e.target.value) || 1) })}
-              />
-            </div>
-          </div>
-          <div className="field-half">
-            <div className="field-label">H</div>
-            <div className="input-group">
-              <input
-                type="number"
-                value={preset.height}
-                min={1}
-                onChange={(e) => onPresetChange({ height: Math.max(1, parseInt(e.target.value) || 1) })}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Pixel stride - with header label */}
-        <div className="field-row">
-          <div className="field-half">
-            <div className="field-label">Pixel</div>
-            <div className="byte-bit-field">
-              <div
-                className={`byte-field ${preset.pixelStrideAuto ? 'disabled' : ''}`}
-                onClick={() => !preset.pixelStrideAuto && onAdvancePixel(1)}
-                onContextMenu={(e) => { e.preventDefault(); !preset.pixelStrideAuto && onAdvancePixel(-1); }}
-                style={{ cursor: preset.pixelStrideAuto ? 'default' : 'pointer' }}
-              >
-                <ByteIcon size={12} className="field-icon" />
-                <input
-                  type="number"
-                  value={preset.pixelStrideByte}
-                  disabled={preset.pixelStrideAuto}
-                  onChange={(e) => onPresetChange({ pixelStrideByte: parseInt(e.target.value) || 0 })}
-                  onClick={(e) => e.stopPropagation()}
-                />
-              </div>
-              <div className={`bit-field ${preset.pixelStrideAuto ? 'disabled' : ''}`}>
-                <BitIcon size={12} className="field-icon" />
-                <input
-                  type="number"
-                  value={preset.pixelStrideBit}
-                  disabled={preset.pixelStrideAuto}
-                  onChange={(e) => onPresetChange({ pixelStrideBit: parseInt(e.target.value) || 0 })}
-                />
-              </div>
-            </div>
-          </div>
-          <label className="auto-checkbox" title="Auto">
+        {/* Height row: value | link | next stride */}
+        <div className="field-label">Height</div>
+        <div className="format-row">
+          <div className="format-value">
             <input
-              type="checkbox"
-              checked={preset.pixelStrideAuto}
-              onChange={(e) => onPresetChange({ pixelStrideAuto: e.target.checked })}
+              type="number"
+              value={preset.height}
+              min={1}
+              onChange={(e) => onPresetChange({ height: Math.max(1, parseInt(e.target.value) || 1) })}
             />
-          </label>
-        </div>
-
-        {/* Row stride */}
-        <div className="field-row">
-          <div className="field-half">
-            <div className="field-label">Row</div>
-            <div className="byte-bit-field">
-              <div
-                className={`byte-field ${preset.rowStrideAuto ? 'disabled' : ''}`}
-                onClick={() => !preset.rowStrideAuto && onAdvanceRow(1)}
-                onContextMenu={(e) => { e.preventDefault(); !preset.rowStrideAuto && onAdvanceRow(-1); }}
-                style={{ cursor: preset.rowStrideAuto ? 'default' : 'pointer' }}
-              >
-                <ByteIcon size={12} className="field-icon" />
-                <input
-                  type="number"
-                  value={preset.rowStrideByte}
-                  disabled={preset.rowStrideAuto}
-                  onChange={(e) => onPresetChange({ rowStrideByte: parseInt(e.target.value) || 0 })}
-                  onClick={(e) => e.stopPropagation()}
-                />
-              </div>
-              <div className={`bit-field ${preset.rowStrideAuto ? 'disabled' : ''}`}>
-                <BitIcon size={12} className="field-icon" />
-                <input
-                  type="number"
-                  value={preset.rowStrideBit}
-                  disabled={preset.rowStrideAuto}
-                  onChange={(e) => onPresetChange({ rowStrideBit: parseInt(e.target.value) || 0 })}
-                />
-              </div>
-            </div>
           </div>
-          <label className="auto-checkbox" title="Auto">
-            <input
-              type="checkbox"
-              checked={preset.rowStrideAuto}
-              onChange={(e) => onPresetChange({ rowStrideAuto: e.target.checked })}
-            />
-          </label>
-        </div>
-
-        {/* Next stride */}
-        <div className="field-row">
-          <div className="field-half">
-            <div className="field-label">Next</div>
-            <div className="byte-bit-field">
-              <div
-                className={`byte-field ${preset.nextStrideAuto ? 'disabled' : ''}`}
-                onClick={() => !preset.nextStrideAuto && onAdvanceNext(1)}
-                onContextMenu={(e) => { e.preventDefault(); !preset.nextStrideAuto && onAdvanceNext(-1); }}
-                style={{ cursor: preset.nextStrideAuto ? 'default' : 'pointer' }}
-              >
-                <ByteIcon size={12} className="field-icon" />
-                <input
-                  type="number"
-                  value={preset.nextStrideByte}
-                  disabled={preset.nextStrideAuto}
-                  onChange={(e) => onPresetChange({ nextStrideByte: parseInt(e.target.value) || 0 })}
-                  onClick={(e) => e.stopPropagation()}
-                />
-              </div>
-              <div className={`bit-field ${preset.nextStrideAuto ? 'disabled' : ''}`}>
-                <BitIcon size={12} className="field-icon" />
-                <input
-                  type="number"
-                  value={preset.nextStrideBit}
-                  disabled={preset.nextStrideAuto}
-                  onChange={(e) => onPresetChange({ nextStrideBit: parseInt(e.target.value) || 0 })}
-                />
-              </div>
-            </div>
-          </div>
-          <label className="auto-checkbox" title="Auto">
-            <input
-              type="checkbox"
-              checked={preset.nextStrideAuto}
-              onChange={(e) => onPresetChange({ nextStrideAuto: e.target.checked })}
-            />
-          </label>
+          <button
+            className={`auto-toggle-btn ${preset.nextStrideAuto ? 'linked' : ''}`}
+            onClick={() => onPresetChange({ nextStrideAuto: !preset.nextStrideAuto })}
+            title={preset.nextStrideAuto ? 'Auto-calculated (click to set manually)' : 'Manual (click to auto-calculate)'}
+          >
+            {preset.nextStrideAuto ? <Link2 size={14} /> : <Link2Off size={14} />}
+          </button>
+          <ByteBitInput
+            byteValue={preset.nextStrideByte}
+            bitValue={preset.nextStrideBit}
+            onChange={(byte, bit) => onPresetChange({ nextStrideByte: byte, nextStrideBit: bit })}
+            disabled={preset.nextStrideAuto}
+            autoByteValue={autoStrides.nextByte}
+            autoBitValue={autoStrides.nextBit}
+            isAuto={preset.nextStrideAuto}
+          />
         </div>
       </div>
     </div>

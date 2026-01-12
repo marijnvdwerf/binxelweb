@@ -212,7 +212,7 @@ export function PixelViewer({
     >
       {data.length === 0 ? (
         <div className="drop-hint">
-          Drop a file here or use File &gt; Open
+          Drop a file here or press Ctrl+O
         </div>
       ) : (
         <>
