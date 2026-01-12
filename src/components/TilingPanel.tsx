@@ -1,5 +1,5 @@
 // Tiling control panel component - Figma-style design
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { ChevronRight } from 'lucide-react';
 import { Preset, TwiddleMode } from '../types';
 import { ByteBitInput } from './ByteBitInput';

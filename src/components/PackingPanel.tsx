@@ -1,5 +1,5 @@
 // Packing control panel component - Figma-style design
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { Link2, Link2Off } from 'lucide-react';
 import { Preset, MAX_BPP } from '../types';
 import { ByteBitInput } from './ByteBitInput';

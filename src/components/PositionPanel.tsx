@@ -1,5 +1,4 @@
 // Position control panel component - Figma-style design
-import React from 'react';
 import { Minus, Plus } from 'lucide-react';
 import { ZOOM_MAX } from '../types';
 import { ByteBitInput } from './ByteBitInput';

@@ -1,5 +1,5 @@
 // Main state management hook for Binxelview
-import { useState, useCallback, useMemo, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { Preset, PaletteMode, createEmptyPreset, copyPreset, ZOOM_MAX } from '../types';
 import { BUILT_IN_PRESETS } from '../presets';
 import { createPaletteLookup, createDefaultCustomPalette, generateRandomSeed, hexToArgb } from '../palette';

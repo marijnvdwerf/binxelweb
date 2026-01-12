@@ -1,5 +1,4 @@
 // Pixel info panel - displays hover info at bottom of sidebar
-import React from 'react';
 
 interface PixelInfoPanelProps {
   pixelInfo: string;

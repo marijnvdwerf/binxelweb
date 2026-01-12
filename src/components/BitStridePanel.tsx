@@ -1,5 +1,5 @@
 // Bit stride panel - register-style layout inspired by ARM documentation
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { Preset } from '../types';
 
 interface BitStridePanelProps {
