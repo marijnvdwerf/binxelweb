@@ -84,9 +84,9 @@ export function BitStridePanel({ preset, onPresetChange }: BitStridePanelProps) 
             <ArrowLeftRight size={14} />
           </button>
           <button
-            className={`icon-btn toggle ${!preset.chunky ? 'active' : ''}`}
+            className={`icon-btn toggle ${preset.chunky ? 'active' : ''}`}
             onClick={() => onPresetChange({ chunky: !preset.chunky })}
-            title="Manual bit plane layout (planar)"
+            title="Chunky pixel layout (contiguous bits)"
           >
             <Layers size={14} />
           </button>

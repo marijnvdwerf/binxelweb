@@ -146,8 +146,14 @@ function App() {
             posByte={state.posByte}
             posBit={state.posBit}
             zoom={state.zoom}
+            hideGrid={state.hideGrid}
+            snapScroll={state.snapScroll}
+            horizontalLayout={state.horizontalLayout}
             onPositionChange={actions.setPosition}
             onZoomChange={actions.setZoom}
+            onToggleGrid={actions.toggleGrid}
+            onToggleSnapScroll={actions.toggleSnapScroll}
+            onToggleHorizontalLayout={actions.toggleHorizontalLayout}
           />
 
           <PackingPanel

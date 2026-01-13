@@ -1,5 +1,5 @@
 // Position control panel component - Figma-style design
-import { Minus, Plus } from 'lucide-react';
+import { Minus, Plus, ArrowDown, ArrowRight, Grid3x3, Link } from 'lucide-react';
 import { ZOOM_MAX } from '../types';
 import { ByteBitInput } from './ByteBitInput';
 
@@ -7,20 +7,57 @@ interface PositionPanelProps {
   posByte: number;
   posBit: number;
   zoom: number;
+  hideGrid: boolean;
+  snapScroll: boolean;
+  horizontalLayout: boolean;
   onPositionChange: (byte: number, bit: number) => void;
   onZoomChange: (zoom: number) => void;
+  onToggleGrid: () => void;
+  onToggleSnapScroll: () => void;
+  onToggleHorizontalLayout: () => void;
 }
 
 export function PositionPanel({
   posByte,
   posBit,
   zoom,
+  hideGrid,
+  snapScroll,
+  horizontalLayout,
   onPositionChange,
   onZoomChange,
+  onToggleGrid,
+  onToggleSnapScroll,
+  onToggleHorizontalLayout,
 }: PositionPanelProps) {
   return (
     <div className="panel">
-      <div className="panel-header">Position</div>
+      <div className="panel-header">
+        Position
+        <div className="panel-header-actions">
+          <button
+            className="auto-toggle-btn"
+            onClick={onToggleHorizontalLayout}
+            title={horizontalLayout ? 'Horizontal layout (row-major)' : 'Vertical layout (column-major)'}
+          >
+            {horizontalLayout ? <ArrowRight size={14} /> : <ArrowDown size={14} />}
+          </button>
+          <button
+            className={`icon-btn toggle ${!hideGrid ? 'active' : ''}`}
+            onClick={onToggleGrid}
+            title={hideGrid ? 'Show grid padding' : 'Hide grid padding'}
+          >
+            <Grid3x3 size={14} />
+          </button>
+          <button
+            className={`icon-btn toggle ${snapScroll ? 'active' : ''}`}
+            onClick={onToggleSnapScroll}
+            title={snapScroll ? 'Snap scroll enabled' : 'Free scroll'}
+          >
+            <Link size={14} />
+          </button>
+        </div>
+      </div>
       <div className="panel-content">
         <div className="position-grid">
           {/* Offset column */}
