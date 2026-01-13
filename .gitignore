@@ -45,3 +45,4 @@ todos.json
 
 # Wrangler (Cloudflare)
 .wrangler
+temp/
