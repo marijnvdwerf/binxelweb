@@ -1,5 +1,6 @@
 // Bit stride panel - register-style layout inspired by ARM documentation
 import { useMemo } from 'react';
+import { ArrowLeftRight, Layers } from 'lucide-react';
 import { Preset } from '../types';
 
 interface BitStridePanelProps {
@@ -44,6 +45,7 @@ export function BitStridePanel({ preset, onPresetChange }: BitStridePanelProps) 
   };
 
   // Group bits into rows of 8, with bit indices in descending order (7-0, 15-8, etc.)
+  // Layout stays the same regardless of reverse bit order setting (matches original)
   const rows = useMemo(() => {
     const result: { inputBit: number; displayBit: number }[][] = [];
     const numRows = Math.ceil(preset.bpp / 8);
@@ -71,24 +73,26 @@ export function BitStridePanel({ preset, onPresetChange }: BitStridePanelProps) 
 
   return (
     <div className="panel">
-      <div className="panel-header">Bit Planes</div>
-      <div className="panel-content">
-        {/* Chunky/Planar toggle */}
-        <div className="toggle-group" style={{ marginBottom: 8 }}>
+      <div className="panel-header">
+        Bit Planes
+        <div className="panel-header-actions">
           <button
-            className={`toggle-btn ${preset.chunky ? 'active' : ''}`}
-            onClick={() => onPresetChange({ chunky: true })}
+            className={`icon-btn toggle ${!preset.littleEndian ? 'active' : ''}`}
+            onClick={() => onPresetChange({ littleEndian: !preset.littleEndian })}
+            title="Reverse bit order"
           >
-            Chunky
+            <ArrowLeftRight size={14} />
           </button>
           <button
-            className={`toggle-btn ${!preset.chunky ? 'active' : ''}`}
-            onClick={() => onPresetChange({ chunky: false })}
+            className={`icon-btn toggle ${!preset.chunky ? 'active' : ''}`}
+            onClick={() => onPresetChange({ chunky: !preset.chunky })}
+            title="Manual bit plane layout (planar)"
           >
-            Planar
+            <Layers size={14} />
           </button>
         </div>
-
+      </div>
+      <div className="panel-content">
         {/* Register-style bit plane table */}
         <div className="register-table">
           {rows.map((row, rowIndex) => (
